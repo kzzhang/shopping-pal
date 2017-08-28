@@ -102,7 +102,7 @@ class ProductSave {
                 Log.d("Success", "first");
                 String searchResult = new String(response);
                 Log.d("basicSave", searchResult);
-                
+
                 index1 = searchResult.indexOf("<Title>")+7;
                 index2 = searchResult.indexOf("</Title>");
                 name = searchResult.substring(index1,index2);
@@ -140,11 +140,14 @@ class ProductSave {
                         index1 = searchResult.indexOf("Average Customer Rating:&nbsp;(")+31;
                         index2 = index1+3;
                         stars = searchResult.substring(index1, index2);
-                        try{
-                            fout.write(("Rating of product: "+stars).getBytes());
-                            fout.write(("\n").getBytes());
-                        }catch (IOException a){
-                            Log.d("Writing IO Exception", a.toString());
+
+                        synchronized (fout) {
+                            try {
+                                fout.write(("Rating of product: " + stars).getBytes());
+                                fout.write(("\n").getBytes());
+                            } catch (IOException a) {
+                                Log.d("Writing IO Exception", a.toString());
+                            }
                         }
                     }
                     @Override
@@ -187,21 +190,23 @@ class ProductSave {
                     }
                 });
 
-                try{
-                    fout.write(("Name of product: "+name).getBytes());
-                    fout.write(("\n").getBytes());
-                    fout.write(("ASIN of product: "+ASIN).getBytes());
-                    fout.write(("\n").getBytes());
-                    fout.write(("Category of product: "+category).getBytes());
-                    fout.write(("\n").getBytes());
-                    fout.write(("Manufacturer of product: "+manufacturer).getBytes());
-                    fout.write(("\n").getBytes());
-                    fout.write(("Url of product: "+producturl).getBytes());
-                    fout.write(("\n").getBytes());
-                }catch (IOException a){
-                    Log.d("Writing IO exception", a.toString());
+                synchronized (fout) {
+                    try {
+                        fout.write(("Name of product: " + name).getBytes());
+                        fout.write(("\n").getBytes());
+                        fout.write(("ASIN of product: " + ASIN).getBytes());
+                        fout.write(("\n").getBytes());
+                        fout.write(("Category of product: " + category).getBytes());
+                        fout.write(("\n").getBytes());
+                        fout.write(("Manufacturer of product: " + manufacturer).getBytes());
+                        fout.write(("\n").getBytes());
+                        fout.write(("Url of product: " + producturl).getBytes());
+                        fout.write(("\n").getBytes());
+                    } catch (IOException a) {
+                        Log.d("Writing IO exception", a.toString());
+                    }
+                    Log.d("Done", "First");
                 }
-                Log.d("Done", "First");
             }
 
             @Override
@@ -252,13 +257,15 @@ class ProductSave {
                     price = temp.substring(index1, index2);
                 }
 
-                try{
-                    fout.write(("Price of product: "+price).getBytes());
-                    fout.write(("\n").getBytes());
-                    fout.write(("Amount of product: "+amount).getBytes());
-                    fout.write(("\n").getBytes());
-                }catch (IOException a){
-                    Log.d("Writing IO exception", a.toString());
+                synchronized (fout) {
+                    try {
+                        fout.write(("Price of product: " + price).getBytes());
+                        fout.write(("\n").getBytes());
+                        fout.write(("Amount of product: " + amount).getBytes());
+                        fout.write(("\n").getBytes());
+                    } catch (IOException a) {
+                        Log.d("Writing IO exception", a.toString());
+                    }
                 }
             }
             @Override

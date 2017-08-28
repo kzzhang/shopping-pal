@@ -46,7 +46,7 @@ public class CartActivity extends AppCompatActivity {
     private ListView mList;
     final int RC_BARCODE_CAPTURE = 9001;
     final int RC_PRODUCT_DISPLAY = 9002;
-    long barcodeValue;
+    String barcodeValue;
     File path, current;
 
     @Override
@@ -186,10 +186,13 @@ public class CartActivity extends AppCompatActivity {
             if (resultCode == CommonStatusCodes.SUCCESS) {
                 if (data != null) {
                     Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
-                    barcodeValue = Long.parseLong(barcode.displayValue);
+                    barcodeValue = barcode.displayValue;
+                    while (String.valueOf(barcodeValue).length() < 12) {
+                        barcodeValue = "0" + barcodeValue;
+                    }
 
                     saver.mapAdd("IdType", "UPC");
-                    saver.mapAdd("ItemId", Long.toString(barcodeValue));
+                    saver.mapAdd("ItemId", barcodeValue);
                     saver.mapAdd("SearchIndex", "All");
 
                     productData = saver.save();
