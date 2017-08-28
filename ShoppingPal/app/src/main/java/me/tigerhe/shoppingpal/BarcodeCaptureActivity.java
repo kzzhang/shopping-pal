@@ -15,7 +15,6 @@
  */
 package me.tigerhe.shoppingpal;
 
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -39,15 +38,12 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.Toast;
-import android.view.Display;
-import android.graphics.Point;
 
-import com.google.android.gms.samples.vision.barcodereader.BarcodeGraphic;
-import com.google.android.gms.samples.vision.barcodereader.BarcodeGraphicTracker;
-import com.google.android.gms.samples.vision.barcodereader.BarcodeTrackerFactory;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.samples.vision.barcodereader.BarcodeGraphic;
+import com.google.android.gms.samples.vision.barcodereader.BarcodeTrackerFactory;
 import com.google.android.gms.samples.vision.barcodereader.ui.camera.CameraSource;
 import com.google.android.gms.samples.vision.barcodereader.ui.camera.CameraSourcePreview;
 
@@ -97,8 +93,9 @@ public final class BarcodeCaptureActivity extends AppCompatActivity {
         mGraphicOverlay = (GraphicOverlay<BarcodeGraphic>) findViewById(R.id.graphicOverlay);
 
         // read parameters from the intent used to launch the activity.
-        boolean autoFocus = true;
-        boolean useFlash = false;
+        boolean autoFocus = getIntent().getBooleanExtra(AutoFocus, true);
+        boolean useFlash = getIntent().getBooleanExtra(UseFlash, false);
+
         // Check for the camera permission before accessing the camera.  If the
         // permission is not granted yet, request permission.
         int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
@@ -142,6 +139,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity {
             }
         };
 
+        findViewById(R.id.topLayout).setOnClickListener(listener);
         Snackbar.make(mGraphicOverlay, R.string.permission_camera_rationale,
                 Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.ok, listener)
@@ -204,12 +202,9 @@ public final class BarcodeCaptureActivity extends AppCompatActivity {
         // Creates and starts the camera.  Note that this uses a higher resolution in comparison
         // to other detection examples to enable the barcode detector to detect small barcodes
         // at long distances.
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
         CameraSource.Builder builder = new CameraSource.Builder(getApplicationContext(), barcodeDetector)
                 .setFacing(CameraSource.CAMERA_FACING_BACK)
-                .setRequestedPreviewSize(size.x, size.y)
+                .setRequestedPreviewSize(1600, 1024)
                 .setRequestedFps(15.0f);
 
         // make sure that auto focus is an available option
