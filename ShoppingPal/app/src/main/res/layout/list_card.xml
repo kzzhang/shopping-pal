@@ -1,36 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@color/colorSecondary"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:weightSum="4">
 
-    <TextView
-        android:id="@+id/quantity_purchased"
-        android:layout_gravity="left"
-        android:gravity="center_vertical|left"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp"
-        android:textColor="@color/colorText"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+        <TextView
+            android:id="@+id/quantity_purchased"
+            android:gravity="center_horizontal"
+            android:textAlignment="center"
+            android:textColor="@color/colorText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/purchased_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textAlignment="center"
+            android:textColor="@color/colorText"/>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/purchased_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="3"
         android:textColor="@color/colorText"
-        android:layout_toRightOf="@id/quantity_purchased"
-        android:layout_marginLeft="50dp"
-        android:gravity="left|center_vertical"/>
+        android:gravity="center"
+        android:textAlignment="center"/>
 
-    <TextView
-        android:id="@+id/purchased_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/quantity_purchased"
-        android:gravity="center_vertical|left"
-        android:layout_margin="5dp"
-        android:layout_marginLeft="10dp"
-        android:textColor="@color/colorText"/>
-
-</RelativeLayout>
+</LinearLayout>

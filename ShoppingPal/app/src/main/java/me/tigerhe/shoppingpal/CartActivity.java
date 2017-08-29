@@ -3,6 +3,7 @@ package me.tigerhe.shoppingpal;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.icu.text.NumberFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -15,7 +16,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +23,6 @@ import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
 
 import java.io.File;
-import java.text.DecimalFormat;
 import java.util.HashMap;
 
 import me.tigerhe.shoppingpal.adapters.ListAdapter;
@@ -43,7 +42,6 @@ public class CartActivity extends AppCompatActivity {
     private AmazonProduct mCurrentProduct;
 
     // list view and adapter for data
-    private ListView mList;
     final int RC_BARCODE_CAPTURE = 9001;
     final int RC_PRODUCT_DISPLAY = 9002;
     String barcodeValue;
@@ -291,8 +289,8 @@ public class CartActivity extends AppCompatActivity {
     }
 
     public void updatePrice(Float total, int items) {
-        String outputPrice = new DecimalFormat("#.##").format(total);
         TextView count = (TextView)findViewById(R.id.count_price);
-        count.setText("$" + outputPrice + " : "+Integer.toString(items)+" items");
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        count.setText(formatter.format(total) + " : "+Integer.toString(items)+" items");
     }
 }

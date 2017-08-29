@@ -1,6 +1,7 @@
 package me.tigerhe.shoppingpal.adapters;
 
 import android.content.Context;
+import android.icu.text.NumberFormat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import java.util.Iterator;
 import java.util.List;
 
+import me.tigerhe.shoppingpal.ProductAlertDialog;
 import me.tigerhe.shoppingpal.R;
 import me.tigerhe.shoppingpal.models.AmazonProduct;
 
@@ -53,10 +55,28 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.listViewHolder
         TextView price = (TextView) holder.mView.findViewById(R.id.purchased_price);
         TextView name = (TextView) holder.mView.findViewById(R.id.purchased_name);
         TextView quantity = (TextView) holder.mView.findViewById(R.id.quantity_purchased);
-        AmazonProduct product = mProducts.get(position);
+        final AmazonProduct product = mProducts.get(position);
         name.setText(product.getName());
-        price.setText(String.valueOf(product.quantity*product.getPrice()));
-        quantity.setText(String.valueOf(product.quantity));
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        String priceString = "Cost: " + formatter.format(product.quantity * product.getPrice());
+        String quantityString = "Quantity: " + String.valueOf(product.quantity);
+        price.setText(priceString);
+        quantity.setText(quantityString);
+
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final ProductAlertDialog productDialog = new ProductAlertDialog(mContext, product);
+                productDialog.setPositive(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        int quantity = productDialog.getQuantity();
+                        product.quantity = quantity;
+                        productDialog.showProgress();
+                    }
+                });
+            }
+        });
     }
 
     @Override
