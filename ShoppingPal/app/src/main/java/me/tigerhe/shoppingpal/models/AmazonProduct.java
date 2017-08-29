@@ -11,16 +11,18 @@ import android.util.Log;
 //always check using isValid() to see if the product was successfully retrieved and populated!!
 
 public class AmazonProduct {
-    public static String name;
-    public static Float price;
-    public static Integer amount;
-    public static Float rating;
-    public static String picture; //url
-    public static String ASIN;
-    public static String category;
-    public static String manufacturer;
-    public static String url;
+    public String name;
+    public Float price;
+    public Integer amount;
+    public Float rating;
+    public String picture; //url
+    public String ASIN;
+    public String category;
+    public String manufacturer;
+    public String url;
     public Integer quantity; //amount to purchase
+
+    public static String FAILURE = "@@@FAILURE@@@";
 
     public AmazonProduct(){
     }
@@ -28,15 +30,15 @@ public class AmazonProduct {
     //populate amazonproduct from parsed string input
     public AmazonProduct(String XmlInput){
         if (XmlInput.equals("Failure")){
-            ASIN = "@@@FAILURE@@@";
-            name = "@@@FAILURE@@@";
+            ASIN = FAILURE;
+            name = FAILURE;
             price = (float)0;
             amount = 0;
             rating = (float)0;
-            picture = "@@@FAILURE@@@";
-            category = "@@@FAILURE@@@";
-            manufacturer = "@@@FAILURE@@@";
-            url = "@@@FAILURE@@@";
+            picture = FAILURE;
+            category = FAILURE;
+            manufacturer = FAILURE;
+            url = FAILURE;
         }
 
         else {
@@ -91,7 +93,7 @@ public class AmazonProduct {
 
     //returns whether product is successfully populated
     public boolean isValid(){
-        if (ASIN.equals("@@@FAILURE@@@") || price == 0) return false;
+        if (ASIN.equals(FAILURE) || price == 0) return false;
         else return true;
     }
 

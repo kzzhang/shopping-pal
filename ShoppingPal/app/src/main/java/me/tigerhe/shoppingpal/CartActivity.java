@@ -198,56 +198,9 @@ public class CartActivity extends AppCompatActivity {
                     //prints data to work with
                     Log.d("Product Data", productData);
                     mCurrentProduct = new AmazonProduct(productData);
-//                    if (retrieved.isValid()) retrieved.print();
-//                    else Log.d("Retrieved", "Invalid!");
-//                    if (retrieved.isValid()){
-//                        AmazonCart sample = new AmazonCart(retrieved, 1);
-//                        Log.d("Checkout URL", sample.checkout);
-//                    }
 
-//                    TextView output = (TextView)findViewById(R.id.data_output);
                     if (mCurrentProduct.isValid()){
                         displayObject(mCurrentProduct);
-//                        output.setText(retrieved.display());
-//                        Button addButton = (Button) findViewById(R.id.add_item);
-//                        addButton.setEnabled(true);
-//                        final TextView quantity = (TextView)findViewById(R.id.quantity);
-//                        quantity.setFocusableInTouchMode(true);
-//                        quantity.setFocusable(true);
-//
-//                        addButton.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View view) {
-//                                String input = quantity.getText().toString();
-//                                try{
-//                                    int number = Integer.parseInt(input);
-//                                    if (number > 0 && number <= retrieved.getAmount()) {
-//                                        Button checkout = (Button) findViewById(R.id.checkout);
-//                                        if (mCart == null) {
-//                                            mCart = new AmazonCart(retrieved, number);
-//                                            checkout.setEnabled(true);
-//                                        } else {
-//                                            mCart.add(retrieved, number);
-//                                        }
-//                                        items += number;
-//                                        price += number*retrieved.getPrice();
-//                                        String outputPrice = new DecimalFormat("#.##").format(price);
-//                                        TextView count = (TextView)findViewById(R.id.count_price);
-//                                        count.setText("$" + outputPrice + " : "+Integer.toString(items)+" items");
-//                                        checkout.setOnClickListener(new View.OnClickListener() {
-//                                            @Override
-//                                            public void onClick(View view) {
-//                                                Uri uriUrl = Uri.parse(mCart.checkout);
-//                                                Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
-//                                                startActivity(launchBrowser);
-//                                            }
-//                                        });
-//                                    }
-//                                }catch (NumberFormatException e){
-//                                    Log.d("Input Error","Input an integer for quantity");
-//                                }
-//                            }
-//                        });
                     }
                     else {
                         Toast.makeText(this, "Error - Could not find the associated product on Amazon", Toast.LENGTH_SHORT).show();
@@ -291,6 +244,6 @@ public class CartActivity extends AppCompatActivity {
     public void updatePrice(Float total, int items) {
         TextView count = (TextView)findViewById(R.id.count_price);
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
-        count.setText(formatter.format(total) + " : "+Integer.toString(items)+" items");
+        count.setText(formatter.format(total) + " : " + Integer.toString(items)+" items");
     }
 }
