@@ -21,6 +21,7 @@ public class AmazonProduct {
     public String manufacturer;
     public String url;
     public Integer quantity; //amount to purchase
+    public String cartItemId; // may be null
 
     public static String FAILURE = "@@@FAILURE@@@";
 
@@ -151,6 +152,9 @@ public class AmazonProduct {
     public String getUrl(){
         return url;
     }
+    public String getCartItemId() {
+        return cartItemId;
+    }
 
     //set functions
     public void setName(String input){
@@ -179,5 +183,8 @@ public class AmazonProduct {
     }
     public void setUrl(String input){
         url = input;
+    }
+    public void setCartItemId(String id) {
+        cartItemId = id;
     }
 }

@@ -1,13 +1,18 @@
 package me.tigerhe.shoppingpal.models;
 
 import android.util.Log;
+import android.util.Xml;
 
 import me.tigerhe.shoppingpal.singletons.SignedRequestsHelper;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.apache.http.Header;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +60,7 @@ public class AmazonCart {
         }
     }
 
-    protected void createCart(final AmazonProduct input, final Integer quantity){
+    protected void createCart(final AmazonProduct input, final Integer quantity) {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("Operation", "CartCreate");
         map.put("Item.1.ASIN", input.ASIN);
@@ -81,6 +86,33 @@ public class AmazonCart {
                 index1 = searchResult.indexOf("<HMAC>")+6;
                 index2 = searchResult.indexOf("</HMAC>");
                 HMAC = searchResult.substring(index1, index2);
+
+                try {
+                    XmlPullParser parser = Xml.newPullParser();
+                    parser.setInput(new StringReader(searchResult));
+                    int eventType = parser.getEventType();
+                    String text = "";
+                    while (eventType != XmlPullParser.END_DOCUMENT) {
+                        String tagName = parser.getName();
+                        switch (eventType) {
+                            case (XmlPullParser.TEXT):
+                                text = parser.getText();
+                                Log.d("TEXT", text);
+                                break;
+                            case (XmlPullParser.END_TAG):
+                                if (tagName.equalsIgnoreCase("CartItemId")) {
+                                    input.cartItemId = text;
+                                }
+                                break;
+                        }
+                        eventType = parser.next();
+                    }
+                } catch (XmlPullParserException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e2) {
+                    e2.printStackTrace();
+                }
+
                 status = false;
             }
             @Override
@@ -129,7 +161,7 @@ public class AmazonCart {
         }
     }
 
-    protected void addProduct(AmazonProduct input, Integer quantity) {
+    protected void addProduct(final AmazonProduct input, Integer quantity) {
         if (quantity > 0) {
             HashMap<String, String> map = new HashMap<String, String>();
             map.put("CartId", cartID);
@@ -146,7 +178,6 @@ public class AmazonCart {
                 public void onStart() {
                     Log.d("Starting", "add");
                     status = false;
-                    //Log.d("[HTTP REQUEST]", query);
                 }
 
                 @Override
@@ -159,6 +190,34 @@ public class AmazonCart {
                     index1 = searchResult.indexOf("<PurchaseURL>") + 13;
                     index2 = searchResult.indexOf("</PurchaseURL>");
                     checkout = searchResult.substring(index1, index2);
+
+                    try {
+                        XmlPullParser parser = Xml.newPullParser();
+                        parser.setInput(new StringReader(searchResult));
+                        int eventType = parser.getEventType();
+                        String text = "";
+                        int index = products.size() - 1;
+                        while (eventType != XmlPullParser.END_DOCUMENT) {
+                            String tagName = parser.getName();
+                            switch (eventType) {
+                                case (XmlPullParser.TEXT):
+                                    text = parser.getText();
+                                    Log.d("TEXT", text);
+                                    break;
+                                case (XmlPullParser.END_TAG):
+                                    if (tagName.equalsIgnoreCase("CartItemId")) {
+                                        products.get(index).cartItemId = text;
+                                        index--;
+                                    }
+                                    break;
+                            }
+                            eventType = parser.next();
+                        }
+                    } catch (XmlPullParserException e1) {
+                        e1.printStackTrace();
+                    } catch (IOException e2) {
+                        e2.printStackTrace();
+                    }
                 }
 
                 @Override

@@ -39,10 +39,12 @@ public class SignedRequestsHelper {
     private static final String HMAC_SHA256_ALGORITHM = "HmacSHA256";
     private static final String REQUEST_URI = "/onca/xml";
     private static final String REQUEST_METHOD = "GET";
+    private static final String WEB_SERVER = "https://shopping-pal-server.herokuapp.com/credentials";
 
     private String endpoint = "webservices.amazon.com"; // must be lowercase
     private String awsAccessKeyId;
     private String awsSecretKey;
+    private OkHttpClient client;
 
     private SecretKeySpec secretKeySpec = null;
     private Mac mac = null;
@@ -145,13 +147,13 @@ public class SignedRequestsHelper {
     }
 
     private void initCredentials() {
-        OkHttpClient client = new OkHttpClient.Builder()
+        client = new OkHttpClient.Builder()
                 .connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS)
                 .readTimeout(TIMEOUT, TimeUnit.MILLISECONDS)
                 .build();
         Request request = new Request.Builder()
                 .get()
-                .url("https://shopping-pal-server.herokuapp.com/credentials")
+                .url(WEB_SERVER)
                 .build();
 
         try {
@@ -176,6 +178,10 @@ public class SignedRequestsHelper {
         }
         catch (InvalidKeyException e) {
         }
+    }
+
+    public OkHttpClient getClient() {
+        return client;
     }
 
 }

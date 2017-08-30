@@ -47,7 +47,6 @@
 
 
         <!--<activity android:name=".Product" />-->
-        <activity android:name=".DisplayProduct"></activity>
     </application>
 
 </manifest>

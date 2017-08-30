@@ -60,6 +60,7 @@ public class ProductAlertDialog {
                 String input = editable.toString();
                 if (!input.equals("")) {
                     mCurrent = Integer.parseInt(input);
+                    product.quantity = mCurrent;
                     String price = formatter.format(mCurrent * product.getPrice());
                     ((TextView) mDialog.findViewById(R.id.dialog_price)).setText(price);
                 }
@@ -88,5 +89,9 @@ public class ProductAlertDialog {
 
     public int getQuantity() {
         return mCurrent;
+    }
+
+    public void dismiss() {
+        mDialog.dismiss();
     }
 }

@@ -19,11 +19,10 @@ import java.util.HashMap;
  */
 
 class ProductSave {
-    File target;
-    FileOutputStream fout;
-    HashMap<String, String> map;
-    //final AsyncHttpResponseHandler handler;
-    String output = "";
+    private File target;
+    private FileOutputStream fout;
+    private HashMap<String, String> map;
+    private String output = "";
 
     public ProductSave(File file, HashMap<String, String> input){
         Log.d("initialize", "first");
@@ -249,9 +248,6 @@ class ProductSave {
                 else{
                     index1 = searchResult.indexOf("<LowestNewPrice>");
                     String temp = searchResult.substring(index1);
-                    index1 = temp.indexOf("<Amount>")+8;
-                    index2 = temp.indexOf("</Amount>");
-                    amount = temp.substring(index1, index2);
                     index1 = temp.indexOf("<FormattedPrice>$") + 17;
                     index2 = temp.indexOf("</FormattedPrice>");
                     price = temp.substring(index1, index2);

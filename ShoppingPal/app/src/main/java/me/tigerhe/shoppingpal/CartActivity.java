@@ -6,6 +6,8 @@ import android.graphics.Rect;
 import android.icu.text.NumberFormat;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -23,13 +25,18 @@ import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 
 import me.tigerhe.shoppingpal.adapters.ListAdapter;
 import me.tigerhe.shoppingpal.models.AmazonCart;
 import me.tigerhe.shoppingpal.models.AmazonProduct;
+import me.tigerhe.shoppingpal.utils.server;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
-public class CartActivity extends AppCompatActivity {
+public class CartActivity extends AppCompatActivity implements ListAdapter.listClick {
 
     private Button cameraButton;
     private Button mCheckoutButton;
@@ -245,5 +252,66 @@ public class CartActivity extends AppCompatActivity {
         TextView count = (TextView)findViewById(R.id.count_price);
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
         count.setText(formatter.format(total) + " : " + Integer.toString(items)+" items");
+    }
+
+    /**
+     * Interface method for dialog positive button clicks on recyclerview items
+     */
+    @Override
+    public void onClick(final AmazonProduct product, final ProductAlertDialog dialog) {
+        if (product.quantity <= product.getAmount()) {
+            dialog.showProgress();
+            final Handler handler = new Handler(Looper.getMainLooper());
+            if (product.quantity == 0 && mCart.getProducts().size() == 1) {
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.hideProgress();
+                        dialog.dismiss();
+                        reset();
+                    }
+                }, 1000);
+            } else {
+                try {
+                    server.modify(mCart, product, new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            Log.d("CALLBACK RESPONSE", response.body().string());
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dialog.hideProgress();
+                                    dialog.dismiss();
+                                    try {
+                                        if (product.quantity == 0) {
+                                            mCart.getProducts().remove(product);
+                                        }
+                                        float price = mAdapter.updateData();
+                                        int items = mAdapter.getNumItems();
+                                        updatePrice(price, items);
+                                        if (mCart.getProducts().size() > 0) {
+                                            mEmptyMessage.setVisibility(View.GONE);
+                                        }
+                                    } catch (Exception e) {
+
+                                    }
+                                }
+                            }, 1000);
+
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            Toast.makeText(mContext, "You can't order that many. The max available is: "
+                    + String.valueOf(product.getAmount()), Toast.LENGTH_SHORT).show();
+        }
     }
 }

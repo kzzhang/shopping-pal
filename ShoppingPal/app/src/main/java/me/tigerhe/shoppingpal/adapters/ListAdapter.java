@@ -19,13 +19,15 @@ import me.tigerhe.shoppingpal.models.AmazonProduct;
  * Created by kevin on 2017-06-01.
  */
 
-public class ListAdapter extends RecyclerView.Adapter<ListAdapter.listViewHolder> {
+public class ListAdapter extends RecyclerView.Adapter<ListAdapter.listViewHolder>  {
     private List<AmazonProduct> mProducts;
     private Context mContext;
+    private listClick mListener;
 
     public ListAdapter(Context context, List<AmazonProduct> products) {
         mProducts = products;
         mContext = context;
+        mListener = (listClick)context;
     }
 
     public static class listViewHolder extends RecyclerView.ViewHolder {
@@ -70,9 +72,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.listViewHolder
                 productDialog.setPositive(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        int quantity = productDialog.getQuantity();
-                        product.quantity = quantity;
-                        productDialog.showProgress();
+                        product.quantity = productDialog.getQuantity();
+                        mListener.onClick(product, productDialog);
                     }
                 });
             }
@@ -103,5 +104,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.listViewHolder
             total += product.quantity;
         }
         return total;
+    }
+
+    public interface listClick {
+        void onClick(AmazonProduct product, ProductAlertDialog dialog);
     }
 }
